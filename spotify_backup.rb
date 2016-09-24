@@ -1,19 +1,20 @@
-require 'dotenv'
 require 'httpclient'
 require 'json'
 require 'csv'
 require 'pry'
 
-Dotenv.load
-
 proxy = ENV['HTTP_PROXY']
 client = HTTPClient.new(proxy)
 
+unless @token = ARGV[0]
+	puts 'You must specify a Spotify Web API token.'
+	exit
+end 
+
 # get new token here: https://developer.spotify.com/web-api/console/get-current-user-saved-tracks/
 target = 'https://api.spotify.com/v1/me/tracks'
-@token = ENV['SPOTIFY_TOKEN']
-@offset = 0
-@limit = 50
+offset = 0
+limit = 50
 
 
 def headers
@@ -27,7 +28,7 @@ songs = [];
 
 retry_count = 0
 begin
-	raw = client.get(target, { 'offset' => @offset, 'limit' => @limit}, headers).content
+	raw = client.get(target, { 'offset' => offset, 'limit' => limit}, headers).content
 	json = JSON.parse(raw)
 
 	if json.nil? || json['items'].nil?
@@ -43,11 +44,11 @@ begin
 		s['track']['artists'].each { |artist| song << artist['name'] }
 		songs << song
 	end
-	@offset += @limit
+	offset += limit
 
-	puts @offset
+	puts offset
 	retry_count = 0
-end while @offset < json['total'].to_i
+end while offset < json['total'].to_i
 
 
 CSV.open('songs.csv', 'w') do |csv|

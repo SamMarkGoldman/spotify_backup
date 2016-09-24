@@ -3,7 +3,6 @@ GEM
   specs:
     byebug (8.2.2)
     coderay (1.1.1)
-    dotenv (2.1.1)
     httpclient (2.8.2.4)
     method_source (0.8.2)
     pry (0.10.3)
@@ -19,7 +18,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  dotenv
   httpclient
   pry
   pry-byebug
